@@ -28,6 +28,7 @@ public class Drive_manuver extends LinearOpMode {
 
     private double harvesterStartPos = 0;
     private double harvesterTargetPos = 0;
+    private double servoTarget = 0;
 
     @Override
     public void runOpMode() {
@@ -43,8 +44,12 @@ public class Drive_manuver extends LinearOpMode {
         landingGear = hardwareMap.get(DcMotor.class, "landingGear");
         lifter = hardwareMap.get(DcMotor.class, "lifter");
         harvester = hardwareMap.get(DcMotor.class, "harvester");
-        //harvester_lift = hardwareMap.get(Servo.class, "harvester_lift");
+        harvester_lift = hardwareMap.get(Servo.class, "harvester_lift");
         extender = hardwareMap.get(DcMotor.class, "extender");
+        extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        extender.setDirection(DcMotor.Direction.FORWARD);
+        lifter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lifter.setDirection(DcMotor.Direction.FORWARD);
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFront.setDirection(DcMotor.Direction.FORWARD);
@@ -59,6 +64,7 @@ public class Drive_manuver extends LinearOpMode {
         //double harvesterLiftPosition = harvester_lift.getPosition();
         //harvester_lift.scaleRange(0.0,1.0);
         //harvester_lift.setPosition(0.5);
+        telemetry.addData("Servo start Position:", harvester_lift.getPosition());
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -66,17 +72,23 @@ public class Drive_manuver extends LinearOpMode {
 
             // Setup a variable for each drive wheel to save power level for telemetry
 
-/*
-            if (gamepad2.dpad_left){
-                harvester_lift.setPosition(0);
-            }
-            else if(gamepad2.dpad_right){
-                harvester_lift.setPosition(1);
-            } else{
 
+            if (gamepad2.dpad_left && servoTarget <= 1){
+                servoTarget = servoTarget + 0.01;
+                harvester_lift.setPosition(servoTarget);
             }
-            telemetry.addData("Servo Position", harvester_lift.getPosition());
-*/
+            else if(gamepad2.dpad_right && servoTarget >= 0){
+                servoTarget = servoTarget - 0.01;
+                harvester_lift.setPosition(servoTarget);
+            } else if(gamepad2.a){
+                servoTarget = 0.5;
+                harvester_lift.setPosition(servoTarget);
+            } else if(gamepad2.b){
+                servoTarget = 0;
+                harvester_lift.setPosition(servoTarget);
+            }
+            telemetry.addData("Servo Position:", harvester_lift.getPosition());
+
 
             if (gamepad1.dpad_up){
                 landingGear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -91,30 +103,15 @@ public class Drive_manuver extends LinearOpMode {
                 landingGear.setPower(0);
             }
 
-            if (gamepad2.a) { //gamepad2.left_stick_y == 1){
-                extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                extender.setDirection(DcMotor.Direction.FORWARD);
-                extender.setPower(1.0);
-            }else if(gamepad2.b) { // gamepad2.left_stick_y == -1){
-                extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                extender.setDirection(DcMotor.Direction.REVERSE);
-                extender.setPower(1.0);
-            }else {
-                extender.setPower(0);
-            }
+                extender.setPower(gamepad2.left_stick_y);
 
-            if (gamepad2.x) { //gamepad2.right_stick_y == 1){
-                lifter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                lifter.setDirection(DcMotor.Direction.FORWARD);
+            if (gamepad2.x) {
                 lifter.setPower(0.5);
-            }else  if (gamepad2.y) { //gamepad2.right_stick_y == -1){
-                lifter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                lifter.setDirection(DcMotor.Direction.REVERSE);
-                lifter.setPower(0.8);
+            }
+            else if(gamepad2.y) {
+                lifter.setPower(-0.8);
             }else {
                 lifter.setPower(0);
-                /*lifter.setPower(0.2);
-                lifter.setDirection(DcMotor.Direction.REVERSE);*/
             }
 
 
