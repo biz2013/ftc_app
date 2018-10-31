@@ -43,7 +43,7 @@ public class Drive_manuver extends LinearOpMode {
         landingGear = hardwareMap.get(DcMotor.class, "landingGear");
         lifter = hardwareMap.get(DcMotor.class, "lifter");
         harvester = hardwareMap.get(DcMotor.class, "harvester");
-        harvester_lift = hardwareMap.get(Servo.class, "harvester_lift");
+        //harvester_lift = hardwareMap.get(Servo.class, "harvester_lift");
         extender = hardwareMap.get(DcMotor.class, "extender");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -56,9 +56,9 @@ public class Drive_manuver extends LinearOpMode {
         runtime.reset();
         landingGear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        double harvesterLiftPosition = harvester_lift.getPosition();
-        harvester_lift.scaleRange(0.0,1.0);
-        harvester_lift.setPosition(0.5);
+        //double harvesterLiftPosition = harvester_lift.getPosition();
+        //harvester_lift.scaleRange(0.0,1.0);
+        //harvester_lift.setPosition(0.5);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -66,7 +66,7 @@ public class Drive_manuver extends LinearOpMode {
 
             // Setup a variable for each drive wheel to save power level for telemetry
 
-
+/*
             if (gamepad2.dpad_left){
                 harvester_lift.setPosition(0);
             }
@@ -76,6 +76,7 @@ public class Drive_manuver extends LinearOpMode {
 
             }
             telemetry.addData("Servo Position", harvester_lift.getPosition());
+*/
 
             if (gamepad1.dpad_up){
                 landingGear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -89,6 +90,7 @@ public class Drive_manuver extends LinearOpMode {
             }else{
                 landingGear.setPower(0);
             }
+
             if (gamepad2.a) { //gamepad2.left_stick_y == 1){
                 extender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 extender.setDirection(DcMotor.Direction.FORWARD);
@@ -151,9 +153,9 @@ public class Drive_manuver extends LinearOpMode {
 
             //DriveMechumWheel.moveRobot(-gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x,
             //        leftFront, leftRear, rightFront, rightRear);
-            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-            double rightX = gamepad1.right_stick_x;
+            double r = Math.hypot(-gamepad1.left_stick_x, gamepad1.left_stick_y);
+            double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
+            double rightX = -gamepad1.right_stick_x;
             double leftFrontPower = r * Math.cos(robotAngle) + rightX;
             double rightFrontPower = r * Math.sin(robotAngle) - rightX;
             double leftBackPower = r * Math.sin(robotAngle) + rightX;
@@ -170,7 +172,7 @@ public class Drive_manuver extends LinearOpMode {
             telemetry.addData("Speed", "Rotor speed (%.2f)", Speed);
             telemetry.addData("Lander", "Position (%d)", landingGear.getCurrentPosition());
             telemetry.addData("ArmLift", "Position(%d)", lifter.getCurrentPosition());
-            telemetry.addData("HarvesterLift", "Position(%.2f)", harvester_lift.getPosition());
+            //telemetry.addData("HarvesterLift", "Position(%.2f)", harvester_lift.getPosition());
             telemetry.update();
         }
     }
