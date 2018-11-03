@@ -30,6 +30,7 @@ public class Drive_manuver extends LinearOpMode {
     private double harvesterTargetPos = 0;
     private double servoTarget = 0;
 
+    
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
