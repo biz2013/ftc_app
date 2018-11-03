@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.InterruptedException;
 
-@Autonomous(name="AI Auto Drive")
+@Autonomous(name="Auto Drive1")
 public class AI_Autonomous_Drive extends LinearOpMode {
     private final static int MaxLanderPosition = 50;
     private final static int MinLanderPosition = 10;
@@ -46,25 +46,28 @@ public class AI_Autonomous_Drive extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-
-
         int landerPosition = -1;
         // run until the end of the match (driver presses STOP)
         //drive forward
         landingGear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         landingGear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         landingGear.setTargetPosition(800);
         landingGear.setPower(extensionPower);
+
         Thread.sleep(10000);
+
         telemetry.addData("Lander", "Position (%d)", landingGear.getCurrentPosition());
         telemetry.update();
-        Backward(Speed);
+
+        Backward(1.0);
         Thread.sleep(500);
+
         Straferight(Speed * 2);
-        Thread.sleep(3000);
     }
 
     private void moveRobot(double left_stick_x, double  left_stick_y, double right_stick_x){
+        left_stick_x = -left_stick_x;
         double r = Math.hypot(left_stick_x, left_stick_y);
         double robotAngle = Math.atan2(left_stick_y, left_stick_x) - Math.PI / 4;
         double rightX = right_stick_x;
@@ -79,17 +82,17 @@ public class AI_Autonomous_Drive extends LinearOpMode {
         rightRear.setPower(rightBackPower);
     }
 
-    public void Foward (double speed){
-        moveRobot(0, -0.5, 0);
+    public void Foward (double power){
+        moveRobot(0, -power, 0);
     }
     public void Strafeleft (double power){
-        moveRobot(0.5, 0, 0);
+        moveRobot(-power, 0, 0);
     }
     private void Straferight (double power){
-        moveRobot(-0.5, 0,0);
+        moveRobot(power, 0,0);
     }
     private void Backward (double power){
-        moveRobot(0, 0.5, 0);
+        moveRobot(0, power, 0);
     }
     private void Land (double power){
         int landerPosition = landingGear.getCurrentPosition();
